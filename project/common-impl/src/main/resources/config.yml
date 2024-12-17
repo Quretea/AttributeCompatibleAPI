@@ -1,0 +1,8 @@
+# 是否强制加载特定的属性兼容
+# 只有服务器内装载了多个属性插件的服主才需要强制加载
+# 否则交由此插件自动兼容即可
+force: false
+# 需要强制加载兼容的属性插件
+# 可选插件如下：
+# AttributePlus、SX-Attribute、PxRpg、OriginAttribute、AttributeSystem、ItemLoreOrigin
+plugin: "AttributePlus"

@@ -1,0 +1,5 @@
+name: AttributeCompatibleAPI
+version: ${version}
+main: com.teaman.attributecompatible.common.AttributeCompatiblePlugin
+softdepend: [AttributePlus, SX-Attribute, PxRpg, OriginAttribute, AttributeSystem, ItemLoreOrigin]
+authors: [ Quretea ]
