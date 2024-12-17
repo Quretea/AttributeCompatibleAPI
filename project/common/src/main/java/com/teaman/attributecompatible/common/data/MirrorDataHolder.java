@@ -11,29 +11,29 @@ import java.util.*;
  * Author: Teaman
  * Date: 2021/9/30 23:26
  */
-public class MirrorDataSource {
+public class MirrorDataHolder {
 
-    private final Map<UUID, Map<String, AttributeHolder>> sourceMirror;
+    private final Map<UUID, Map<String, MirrorDataContainer>> mirrorContainers;
     private final Map<UUID, Queue<MirrorDataOperator>> opCache;
 
     private final String pluginName;
 
-    public static MirrorDataSource INSTANCE;
+    public static MirrorDataHolder INSTANCE;
 
-    public MirrorDataSource(Plugin plugin){
-        this.sourceMirror = Maps.newHashMap();
+    public MirrorDataHolder(Plugin plugin){
+        this.mirrorContainers = Maps.newHashMap();
         this.opCache = Maps.newHashMap();
         this.pluginName = plugin.getName();
         INSTANCE = this;
     }
 
-    public void addAttributeAddOperator(UUID uuid, String key, AttributeHolder attributeHolder){
+    public void addAttributeAddOperator(UUID uuid, String key, MirrorDataContainer mirrorDataContainer){
         @Nullable Queue<MirrorDataOperator> operators = this.opCache.get(uuid);
         if (operators == null){
             operators = new LinkedList<>();
             opCache.put(uuid, operators);
         }
-        operators.offer(MirrorDataOperator.createAddOperation(createIdentifierKey(key), attributeHolder));
+        operators.offer(MirrorDataOperator.createAddOperation(createIdentifierKey(key), mirrorDataContainer));
     }
 
     public void addAttributeRemoveOperator(UUID uuid, String key){
@@ -54,36 +54,36 @@ public class MirrorDataSource {
         return operators;
     }
 
-    public void addSourceMirrorData(UUID uuid, String identifier, AttributeHolder holder){
-        @NotNull Map<String, AttributeHolder> mirror = this.sourceMirror.computeIfAbsent(uuid, k -> new HashMap<>());
+    public void addMirrorDataContainer(UUID uuid, String identifier, MirrorDataContainer holder){
+        @NotNull Map<String, MirrorDataContainer> mirror = this.mirrorContainers.computeIfAbsent(uuid, k -> new HashMap<>());
         mirror.put(identifier, holder);
     }
 
-    public void removeSourceMirrorData(UUID uuid, String identifier){
-        @Nullable Map<String, AttributeHolder> mirror = this.sourceMirror.get(uuid);
+    public void removeMirrorDataContainer(UUID uuid, String identifier){
+        @Nullable Map<String, MirrorDataContainer> mirror = this.mirrorContainers.get(uuid);
         if (mirror != null){
             mirror.remove(identifier);
         }
     }
 
-    public @Nullable Object readSourceMirrorData(UUID uuid, String key){
-        @Nullable Map<String, AttributeHolder> mirror = this.sourceMirror.get(uuid);
+    public @Nullable Object readMirrorDataSource(UUID uuid, String key){
+        @Nullable Map<String, MirrorDataContainer> mirror = this.mirrorContainers.get(uuid);
         if (mirror == null) return null;
-        @Nullable AttributeHolder holder = mirror.get(createIdentifierKey(key));
+        @Nullable MirrorDataContainer holder = mirror.get(createIdentifierKey(key));
         if (holder == null) return null;
         return holder.getData();
     }
 
-    public @NotNull Set<AttributeHolder> getAllSourceMirrorData(UUID uuid){
-        Set<AttributeHolder> set = new HashSet<>();
-        @Nullable Map<String, AttributeHolder> mirror = this.sourceMirror.get(uuid);
+    public @NotNull Set<MirrorDataContainer> getAllMirrorDataContainer(UUID uuid){
+        Set<MirrorDataContainer> set = new HashSet<>();
+        @Nullable Map<String, MirrorDataContainer> mirror = this.mirrorContainers.get(uuid);
         if (mirror == null) return set;
         set.addAll(mirror.values());
         return set;
     }
 
     protected void release(UUID uuid){
-        sourceMirror.remove(uuid);
+        mirrorContainers.remove(uuid);
         opCache.remove(uuid);
     }
 

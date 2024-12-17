@@ -1,8 +1,8 @@
 package com.teaman.attributecompatible.common.compatible.originattribute;
 
 import ac.github.oa.internal.core.attribute.equip.Slot;
-import com.teaman.attributecompatible.common.data.MirrorDataSource;
-import com.teaman.attributecompatible.common.data.SourceDataManager;
+import com.teaman.attributecompatible.common.data.MirrorDataHolder;
+import com.teaman.attributecompatible.common.data.MirrorDataManager;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
@@ -33,11 +33,11 @@ public class CompatibleMirrorSlot extends Slot {
     @Nullable
     @Override
     public ItemStack getItem(@NotNull LivingEntity livingEntity) {
-        @Nullable MirrorDataSource mirror = SourceDataManager.INSTANCE.getMirrorDataSource(plugin);
+        @Nullable MirrorDataHolder mirror = MirrorDataManager.INSTANCE.getMirrorDataHolder(plugin);
         if (mirror == null){
             return super.getItem();
         }
-        Object o = mirror.readSourceMirrorData(livingEntity.getUniqueId(), id);
+        Object o = mirror.readMirrorDataSource(livingEntity.getUniqueId(), id);
         if (o instanceof ItemStack){
             return (ItemStack) o;
         }

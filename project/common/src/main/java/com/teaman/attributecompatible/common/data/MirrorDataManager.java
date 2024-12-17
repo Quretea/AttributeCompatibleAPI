@@ -15,18 +15,18 @@ import java.util.UUID;
  * Author: Teaman
  * Date: 2021/9/28 13:34
  */
-public class SourceDataManager {
+public class MirrorDataManager {
 
-    public static SourceDataManager INSTANCE;
+    public static MirrorDataManager INSTANCE;
 
-    public SourceDataManager() {
+    public MirrorDataManager() {
         INSTANCE = this;
     }
 
-    private final Map<Plugin, MirrorDataSource> ATTRIBUTE_DATA = Maps.newConcurrentMap();
+    private final Map<Plugin, MirrorDataHolder> ATTRIBUTE_DATA = Maps.newConcurrentMap();
 
     public void registerSourcePlugin(Plugin plugin) {
-        ATTRIBUTE_DATA.put(plugin, new MirrorDataSource(plugin));
+        ATTRIBUTE_DATA.put(plugin, new MirrorDataHolder(plugin));
         Utils.println("AttributeCompatibleAPI",plugin.getName()+"-"+plugin.getDescription().getVersion()+" 已注册为源数据来源!!");
     }
 
@@ -35,15 +35,15 @@ public class SourceDataManager {
     }
 
 
-    public @Nullable MirrorDataSource getMirrorDataSource(Plugin plugin){
+    public @Nullable MirrorDataHolder getMirrorDataHolder(Plugin plugin){
         return ATTRIBUTE_DATA.get(plugin);
     }
 
 
-    public void releaseMirrorDataSource(LivingEntity livingEntity) {
+    public void releaseMirrorDataHolder(LivingEntity livingEntity) {
         UUID uuid = livingEntity.getUniqueId();
-        ATTRIBUTE_DATA.values().forEach(dataSource -> {
-            dataSource.release(uuid);
+        ATTRIBUTE_DATA.values().forEach(mirrorDataHolder -> {
+            mirrorDataHolder.release(uuid);
         });
     }
 

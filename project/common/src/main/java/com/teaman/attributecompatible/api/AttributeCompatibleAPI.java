@@ -1,7 +1,7 @@
 package com.teaman.attributecompatible.api;
 
 import com.teaman.attributecompatible.api.compatible.ICompatible;
-import com.teaman.attributecompatible.common.data.SourceDataManager;
+import com.teaman.attributecompatible.common.data.MirrorDataManager;
 import org.bukkit.plugin.Plugin;
 
 /**
@@ -33,6 +33,6 @@ public class AttributeCompatibleAPI {
      * @param plugin       源数据操作插件
      */
     public static void registerSourcePlugin(Plugin plugin) {
-        SourceDataManager.INSTANCE.registerSourcePlugin(plugin);
+        MirrorDataManager.INSTANCE.registerSourcePlugin(plugin);
     }
 }

@@ -10,15 +10,15 @@ import java.util.List;
  * Author Teaman
  * Date 2024/8/5 9:52
  */
-public class AttributeHolder {
+public class MirrorDataContainer {
     private @Nullable List<String> stringList;
     private @Nullable ItemStack itemStack;
 
-    public AttributeHolder(@NotNull List<String> stringList) {
+    public MirrorDataContainer(@NotNull List<String> stringList) {
         this.stringList = stringList;
     }
 
-    public AttributeHolder(@NotNull ItemStack itemStack) {
+    public MirrorDataContainer(@NotNull ItemStack itemStack) {
         this.itemStack = itemStack.clone();
     }
 

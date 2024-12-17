@@ -13,7 +13,7 @@ import com.teaman.attributecompatible.common.compatible.pxrpg.PrCompatible;
 import com.teaman.attributecompatible.common.compatible.pxrpg.PxRpgAdapter;
 import com.teaman.attributecompatible.common.compatible.sxattribute.SxCompatibleFor2;
 import com.teaman.attributecompatible.common.compatible.sxattribute.SxCompatibleFor3;
-import com.teaman.attributecompatible.common.data.SourceDataManager;
+import com.teaman.attributecompatible.common.data.MirrorDataManager;
 import com.teaman.attributecompatible.common.listener.CompatibleListener;
 import com.teaman.attributecompatible.common.listener.DefaultListener;
 import com.teaman.attributecompatible.common.listener.PxRpgListener;
@@ -41,7 +41,7 @@ public final class AttributeCompatiblePlugin extends JavaPlugin {
         Utils.println(NAME, "版本："+ this.getDescription().getVersion());
         saveDefaultConfig();
         reloadConfig();
-        new SourceDataManager();
+        new MirrorDataManager();
         if (!forceCheckCompatiblePlugin()) {
             autoCheckCompatiblePlugin();
         }

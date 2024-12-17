@@ -11,17 +11,17 @@ import java.util.Objects;
  */
 public class MirrorDataOperator {
     private final @NotNull String key;
-    private final @Nullable AttributeHolder holder;
+    private final @Nullable MirrorDataContainer holder;
     private final @NotNull Operator operator;
 
-    public static MirrorDataOperator createAddOperation(@NotNull String index, @NotNull AttributeHolder holder){
+    public static MirrorDataOperator createAddOperation(@NotNull String index, @NotNull MirrorDataContainer holder){
         return new MirrorDataOperator(index, holder, Operator.ADD);
     }
     public static MirrorDataOperator createRemoveOperation(@NotNull String index){
         return new MirrorDataOperator(index, null, Operator.REMOVE);
     }
 
-    private MirrorDataOperator(@NotNull String key, @Nullable AttributeHolder holder, @NotNull Operator operator) {
+    private MirrorDataOperator(@NotNull String key, @Nullable MirrorDataContainer holder, @NotNull Operator operator) {
         this.operator = operator;
         this.key = key;
         this.holder = holder;
@@ -31,7 +31,7 @@ public class MirrorDataOperator {
         return key;
     }
 
-    public @Nullable AttributeHolder getHolder() {
+    public @Nullable MirrorDataContainer getHolder() {
         return holder;
     }
 

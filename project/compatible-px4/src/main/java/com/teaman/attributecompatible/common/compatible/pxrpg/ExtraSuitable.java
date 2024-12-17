@@ -8,9 +8,9 @@ import com.pxpmc.pxrpg.api.modules.equip.EquipManager;
 import com.pxpmc.pxrpg.api.modules.equip.EquipModule;
 import com.pxpmc.pxrpg.api.modules.equipcontainer.PlayerEquip;
 import com.pxpmc.pxrpg.api.modules.suit.Suitable;
-import com.teaman.attributecompatible.common.data.AttributeHolder;
-import com.teaman.attributecompatible.common.data.MirrorDataSource;
-import com.teaman.attributecompatible.common.data.SourceDataManager;
+import com.teaman.attributecompatible.common.data.MirrorDataContainer;
+import com.teaman.attributecompatible.common.data.MirrorDataHolder;
+import com.teaman.attributecompatible.common.data.MirrorDataManager;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -35,16 +35,16 @@ public class ExtraSuitable implements Suitable {
         Map<String, Integer> suitMap = new HashMap<>();
 
         // 缓存 SourceDataManager 实例
-        SourceDataManager sourceDataManager = SourceDataManager.INSTANCE;
-        List<Plugin> registeredPlugins = sourceDataManager.getRegisteredSourcePlugin();
+        MirrorDataManager mirrorDataManager = MirrorDataManager.INSTANCE;
+        List<Plugin> registeredPlugins = mirrorDataManager.getRegisteredSourcePlugin();
 
         for (Plugin plugin : registeredPlugins) {
-            MirrorDataSource dataSource = sourceDataManager.getMirrorDataSource(plugin);
+            MirrorDataHolder dataSource = mirrorDataManager.getMirrorDataHolder(plugin);
             if (dataSource == null) continue;
 
             // 缓存玩家的所有源镜像数据
-            Set<AttributeHolder> holders = dataSource.getAllSourceMirrorData(this.player.getUniqueId());
-            for (AttributeHolder holder : holders) {
+            Set<MirrorDataContainer> holders = dataSource.getAllMirrorDataContainer(this.player.getUniqueId());
+            for (MirrorDataContainer holder : holders) {
                 ItemStack item = holder.getItemStack();
                 if (item == null) continue;
 
@@ -65,15 +65,15 @@ public class ExtraSuitable implements Suitable {
     @Override
     public Collection<EquipInter> allEquip() {
         Collection<EquipInter> suitMap = new ArrayList<>();
-        SourceDataManager sourceDataManager = SourceDataManager.INSTANCE;
-        List<Plugin> registeredPlugins = sourceDataManager.getRegisteredSourcePlugin();
+        MirrorDataManager mirrorDataManager = MirrorDataManager.INSTANCE;
+        List<Plugin> registeredPlugins = mirrorDataManager.getRegisteredSourcePlugin();
         for (Plugin plugin : registeredPlugins) {
-            MirrorDataSource dataSource = sourceDataManager.getMirrorDataSource(plugin);
+            MirrorDataHolder dataSource = mirrorDataManager.getMirrorDataHolder(plugin);
             if (dataSource == null) continue;
 
             // 缓存玩家的所有源镜像数据
-            Set<AttributeHolder> holders = dataSource.getAllSourceMirrorData(this.player.getUniqueId());
-            for (AttributeHolder holder : holders) {
+            Set<MirrorDataContainer> holders = dataSource.getAllMirrorDataContainer(this.player.getUniqueId());
+            for (MirrorDataContainer holder : holders) {
                 ItemStack item = holder.getItemStack();
                 if (item == null) continue;
 

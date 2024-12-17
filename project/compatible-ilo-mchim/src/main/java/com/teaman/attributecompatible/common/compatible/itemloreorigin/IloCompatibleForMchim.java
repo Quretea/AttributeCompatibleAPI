@@ -2,10 +2,10 @@ package com.teaman.attributecompatible.common.compatible.itemloreorigin;
 
 import com.mchim.ItemLoreOrigin.API.AttributeAPI;
 import com.teaman.attributecompatible.api.compatible.ICompatible;
-import com.teaman.attributecompatible.common.data.AttributeHolder;
+import com.teaman.attributecompatible.common.data.MirrorDataContainer;
 import com.teaman.attributecompatible.common.data.MirrorDataOperator;
-import com.teaman.attributecompatible.common.data.MirrorDataSource;
-import com.teaman.attributecompatible.common.data.SourceDataManager;
+import com.teaman.attributecompatible.common.data.MirrorDataHolder;
+import com.teaman.attributecompatible.common.data.MirrorDataManager;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
@@ -25,16 +25,16 @@ public class IloCompatibleForMchim implements ICompatible {
 
     @Override
     public @Nullable Object getAttributeSource(Plugin plugin, LivingEntity livingEntity, String index) {
-        @Nullable MirrorDataSource mirror = SourceDataManager.INSTANCE.getMirrorDataSource(plugin);
+        @Nullable MirrorDataHolder mirror = MirrorDataManager.INSTANCE.getMirrorDataHolder(plugin);
         if (mirror == null){
             return null;
         }
-        return mirror.readSourceMirrorData(livingEntity.getUniqueId(), index);
+        return mirror.readMirrorDataSource(livingEntity.getUniqueId(), index);
     }
 
     @Override
     public void addAttributeSource(Plugin plugin, LivingEntity livingEntity, String index, ItemStack itemStack) {
-        @Nullable MirrorDataSource mirror = SourceDataManager.INSTANCE.getMirrorDataSource(plugin);
+        @Nullable MirrorDataHolder mirror = MirrorDataManager.INSTANCE.getMirrorDataHolder(plugin);
         if (mirror == null){
             return;
         }
@@ -42,21 +42,21 @@ public class IloCompatibleForMchim implements ICompatible {
         if (itemStack==null || itemStack.getData().getItemType().equals(Material.AIR)) {
             return;
         }
-        mirror.addAttributeAddOperator(livingEntity.getUniqueId(), index, new AttributeHolder(itemStack));
+        mirror.addAttributeAddOperator(livingEntity.getUniqueId(), index, new MirrorDataContainer(itemStack));
     }
 
     @Override
     public void addAttributeSource(Plugin plugin, LivingEntity livingEntity, String index, List<String> attr) {
-        @Nullable MirrorDataSource mirror = SourceDataManager.INSTANCE.getMirrorDataSource(plugin);
+        @Nullable MirrorDataHolder mirror = MirrorDataManager.INSTANCE.getMirrorDataHolder(plugin);
         if (mirror == null){
             return;
         }
-        mirror.addAttributeAddOperator(livingEntity.getUniqueId(), index, new AttributeHolder(attr));
+        mirror.addAttributeAddOperator(livingEntity.getUniqueId(), index, new MirrorDataContainer(attr));
     }
 
     @Override
     public void removeAttributeSource(Plugin plugin, LivingEntity livingEntity,String index) {
-        @Nullable MirrorDataSource mirror = SourceDataManager.INSTANCE.getMirrorDataSource(plugin);
+        @Nullable MirrorDataHolder mirror = MirrorDataManager.INSTANCE.getMirrorDataHolder(plugin);
         if (mirror == null){
             return;
         }
@@ -65,7 +65,7 @@ public class IloCompatibleForMchim implements ICompatible {
 
     @Override
     public void mergeAttributeSource(Plugin plugin, LivingEntity livingEntity) {
-        @Nullable MirrorDataSource mirror = SourceDataManager.INSTANCE.getMirrorDataSource(plugin);
+        @Nullable MirrorDataHolder mirror = MirrorDataManager.INSTANCE.getMirrorDataHolder(plugin);
         if (mirror == null){
             return;
         }
@@ -73,23 +73,23 @@ public class IloCompatibleForMchim implements ICompatible {
         Queue<MirrorDataOperator> queue = mirror.getAttributeOperatorQueue(livingEntity.getUniqueId());
         MirrorDataOperator operator;
         while ((operator = queue.poll()) != null) {
-            AttributeHolder holder = operator.getHolder();
+            MirrorDataContainer holder = operator.getHolder();
             String id = operator.getIdentifierKey();
             if (operator.isAddOperation() && holder != null){
                 @Nullable ItemStack itemStack = holder.getItemStack();
                 if (itemStack != null){
-                    mirror.addSourceMirrorData(livingEntity.getUniqueId(), id, holder);
+                    mirror.addMirrorDataContainer(livingEntity.getUniqueId(), id, holder);
                     continue;
                 }
                 List<String> stringList = holder.getStringList();
                 if (stringList != null) {
-                    mirror.addSourceMirrorData(livingEntity.getUniqueId(), id, holder);
+                    mirror.addMirrorDataContainer(livingEntity.getUniqueId(), id, holder);
                 }
             }else {
-                mirror.removeSourceMirrorData(livingEntity.getUniqueId(), id);
+                mirror.removeMirrorDataContainer(livingEntity.getUniqueId(), id);
             }
         }
-        AttributeAPI.setItems(plugin.getClass(),livingEntity.getUniqueId(),transfer(mirror.getAllSourceMirrorData(livingEntity.getUniqueId())));
+        AttributeAPI.setItems(plugin.getClass(),livingEntity.getUniqueId(),transfer(mirror.getAllMirrorDataContainer(livingEntity.getUniqueId())));
     }
 
     @Override
@@ -97,9 +97,9 @@ public class IloCompatibleForMchim implements ICompatible {
         // 无需刷新 该插件底层为tick自动刷新
     }
 
-    private List<ItemStack> transfer(Set<AttributeHolder> set){
+    private List<ItemStack> transfer(Set<MirrorDataContainer> set){
         List<ItemStack> result = new ArrayList<>();
-        for (AttributeHolder holder : set){
+        for (MirrorDataContainer holder : set){
             @Nullable ItemStack itemStack = holder.getItemStack();
             if (itemStack != null){
                 result.add(itemStack);

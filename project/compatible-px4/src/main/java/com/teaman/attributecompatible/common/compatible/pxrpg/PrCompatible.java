@@ -8,10 +8,10 @@ import com.pxpmc.pxrpg.api.modules.equip.EquipInter;
 import com.pxpmc.pxrpg.api.modules.suit.PlayerSuit;
 import com.pxpmc.pxrpg.api.modules.suit.SuitModule;
 import com.teaman.attributecompatible.api.compatible.ICompatible;
-import com.teaman.attributecompatible.common.data.AttributeHolder;
+import com.teaman.attributecompatible.common.data.MirrorDataContainer;
 import com.teaman.attributecompatible.common.data.MirrorDataOperator;
-import com.teaman.attributecompatible.common.data.MirrorDataSource;
-import com.teaman.attributecompatible.common.data.SourceDataManager;
+import com.teaman.attributecompatible.common.data.MirrorDataHolder;
+import com.teaman.attributecompatible.common.data.MirrorDataManager;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -33,16 +33,16 @@ public class PrCompatible implements ICompatible {
 
     @Override
     public @Nullable Object getAttributeSource(Plugin plugin, LivingEntity livingEntity, String index) {
-        @Nullable MirrorDataSource mirror = SourceDataManager.INSTANCE.getMirrorDataSource(plugin);
+        @Nullable MirrorDataHolder mirror = MirrorDataManager.INSTANCE.getMirrorDataHolder(plugin);
         if (mirror == null){
             return null;
         }
-        return mirror.readSourceMirrorData(livingEntity.getUniqueId(), index);
+        return mirror.readMirrorDataSource(livingEntity.getUniqueId(), index);
     }
 
     @Override
     public void addAttributeSource(Plugin plugin, LivingEntity livingEntity, String index, ItemStack itemStack) {
-        @Nullable MirrorDataSource mirror = SourceDataManager.INSTANCE.getMirrorDataSource(plugin);
+        @Nullable MirrorDataHolder mirror = MirrorDataManager.INSTANCE.getMirrorDataHolder(plugin);
         if (mirror == null){
             return;
         }
@@ -50,21 +50,21 @@ public class PrCompatible implements ICompatible {
         if (itemStack==null || itemStack.getData().getItemType().equals(Material.AIR)) {
             return;
         }
-        mirror.addAttributeAddOperator(livingEntity.getUniqueId(), index, new AttributeHolder(itemStack));
+        mirror.addAttributeAddOperator(livingEntity.getUniqueId(), index, new MirrorDataContainer(itemStack));
     }
 
     @Override
     public void addAttributeSource(Plugin plugin, LivingEntity livingEntity, String index, List<String> attr) {
-        @Nullable MirrorDataSource mirror = SourceDataManager.INSTANCE.getMirrorDataSource(plugin);
+        @Nullable MirrorDataHolder mirror = MirrorDataManager.INSTANCE.getMirrorDataHolder(plugin);
         if (mirror == null){
             return;
         }
-        mirror.addAttributeAddOperator(livingEntity.getUniqueId(), index, new AttributeHolder(attr));
+        mirror.addAttributeAddOperator(livingEntity.getUniqueId(), index, new MirrorDataContainer(attr));
     }
 
     @Override
     public void removeAttributeSource(Plugin plugin, LivingEntity livingEntity,String index) {
-        @Nullable MirrorDataSource mirror = SourceDataManager.INSTANCE.getMirrorDataSource(plugin);
+        @Nullable MirrorDataHolder mirror = MirrorDataManager.INSTANCE.getMirrorDataHolder(plugin);
         if (mirror == null){
             return;
         }
@@ -74,7 +74,7 @@ public class PrCompatible implements ICompatible {
     @Override
     public void mergeAttributeSource(Plugin plugin, LivingEntity livingEntity) {
         if (livingEntity instanceof Player) {
-            @Nullable MirrorDataSource mirror = SourceDataManager.INSTANCE.getMirrorDataSource(plugin);
+            @Nullable MirrorDataHolder mirror = MirrorDataManager.INSTANCE.getMirrorDataHolder(plugin);
             if (mirror == null){
                 return;
             }
@@ -83,22 +83,22 @@ public class PrCompatible implements ICompatible {
             MirrorDataOperator operator;
             while ((operator = queue.poll()) != null) {
                 flag = true;
-                AttributeHolder holder = operator.getHolder();
+                MirrorDataContainer holder = operator.getHolder();
                 String id = operator.getIdentifierKey();
                 if (operator.isAddOperation() && holder != null){
                     @Nullable ItemStack itemStack = holder.getItemStack();
                     if (itemStack != null){
-                        mirror.addSourceMirrorData(livingEntity.getUniqueId(), id, holder);
+                        mirror.addMirrorDataContainer(livingEntity.getUniqueId(), id, holder);
                         cacheItemAttr(livingEntity, id, itemStack);
                         continue;
                     }
                     List<String> stringList = holder.getStringList();
                     if (stringList != null) {
-                        mirror.addSourceMirrorData(livingEntity.getUniqueId(), id, holder);
+                        mirror.addMirrorDataContainer(livingEntity.getUniqueId(), id, holder);
                         cacheListAttr(livingEntity, id, stringList);
                     }
                 }else {
-                    mirror.removeSourceMirrorData(livingEntity.getUniqueId(), id);
+                    mirror.removeMirrorDataContainer(livingEntity.getUniqueId(), id);
                     ExtraAttributeCache.INSTANCE.removeExtraAttributeData(id, livingEntity);
                 }
             }

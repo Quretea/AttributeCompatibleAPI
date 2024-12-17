@@ -1,7 +1,7 @@
 package com.teaman.attributecompatible.common.listener;
 
 import com.teaman.attributecompatible.common.compatible.pxrpg.ExtraAttributeCache;
-import com.teaman.attributecompatible.common.data.SourceDataManager;
+import com.teaman.attributecompatible.common.data.MirrorDataManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -18,7 +18,7 @@ public class PxRpgListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     private void onQuit(PlayerQuitEvent event) {
         final Player player = event.getPlayer();
-        SourceDataManager.INSTANCE.releaseMirrorDataSource(player);
+        MirrorDataManager.INSTANCE.releaseMirrorDataHolder(player);
         ExtraAttributeCache.INSTANCE.releaseExtraAttributeData(player);
     }
 

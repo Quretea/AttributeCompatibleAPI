@@ -2,7 +2,7 @@ package com.teaman.attributecompatible.common.listener;
 
 import com.teaman.attributecompatible.api.event.AttributeLoadOverEvent;
 import com.teaman.attributecompatible.api.event.AttributeReadyEvent;
-import com.teaman.attributecompatible.common.data.SourceDataManager;
+import com.teaman.attributecompatible.common.data.MirrorDataManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -29,7 +29,7 @@ public class DefaultListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     private void onQuit(PlayerQuitEvent event) {
         final Player player = event.getPlayer();
-        SourceDataManager.INSTANCE.releaseMirrorDataSource(player);
+        MirrorDataManager.INSTANCE.releaseMirrorDataHolder(player);
     }
 
 }
