@@ -19,7 +19,7 @@ public class AttributeHolder {
     }
 
     public AttributeHolder(@NotNull ItemStack itemStack) {
-        this.itemStack = itemStack;
+        this.itemStack = itemStack.clone();
     }
 
     public @Nullable List<String> getStringList() {
